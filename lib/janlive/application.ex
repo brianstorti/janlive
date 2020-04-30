@@ -12,7 +12,9 @@ defmodule Janlive.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Janlive.PubSub},
       # Start the Endpoint (http/https)
-      JanliveWeb.Endpoint
+      JanliveWeb.Endpoint,
+      {Registry, keys: :unique, name: Janlive.GameRegistry},
+
       # Start a worker by calling: Janlive.Worker.start_link(arg)
       # {Janlive.Worker, arg}
     ]
