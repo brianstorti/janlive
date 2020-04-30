@@ -1,1 +1,18 @@
-foo
+<%= if @room_name == nil do %>
+  <form phx-submit="submit-room">
+    <input autocomplete="off" type="text" name="room_name", placeholder="Room name" />
+    <input type="submit" value="Create Room" />
+  </form>
+<% end %>
+
+<%= if @room_name && @player_name == nil do %>
+  <form phx-submit="submit-player-name">
+    <input autocomplete="off" type="text" name="player_name", placeholder="Enter your name" />
+    <input type="submit" value="Join" />
+  </form>
+<% end %>
+
+
+<%= if @room_name && @player_name do %>
+the game starts here for <%= @player_name %> at <%= @room_name %>
+<% end %>

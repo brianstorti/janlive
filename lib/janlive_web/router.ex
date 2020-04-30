@@ -17,9 +17,8 @@ defmodule JanliveWeb.Router do
   scope "/", JanliveWeb do
     pipe_through :browser
 
-    # live "/", PageLive, :index
-    get "/", InitialPageController, :index, layout: { JanliveWeb.LayoutView, "app.html" }
-    live "/rooms/:name", RoomLive
+    live "/", RoomLive
+    live "/rooms/:room_name", RoomLive
   end
 
   # Other scopes may use custom stacks.
