@@ -14,5 +14,17 @@
 
 
 <%= if @room_name && @player_name do %>
-the game starts here for <%= @player_name %> at <%= @room_name %>
+  the game starts here for <%= @player_name %> at <%= @room_name %>
+
+  <div>
+    <button phx-click="choose-weapon" phx-value-weapon="rock">Rock</button>
+    <button phx-click="choose-weapon" phx-value-weapon="paper">Paper</button>
+    <button phx-click="choose-weapon" phx-value-weapon="scissors">Scissors</button>
+  </div>
+
+  <%= for player <- @players do %>
+    <p><%= player.name %> - <%= player.weapon %></p>
+  <% end %>
+
+  <p>Result: <%= @result %></p>
 <% end %>
