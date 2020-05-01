@@ -1,20 +1,20 @@
-<%= if @room_name == nil do %>
+<%= if @room == nil do %>
   <form phx-submit="submit-room">
-    <input autocomplete="off" type="text" name="room_name", placeholder="Room name" />
+    <input autocomplete="off" type="text" name="room", placeholder="Room name" />
     <input type="submit" value="Create Room" />
   </form>
 <% end %>
 
-<%= if @room_name && @player_name == nil do %>
+<%= if @room && @player == nil do %>
   <form phx-submit="submit-player-name">
-    <input autocomplete="off" type="text" name="player_name", placeholder="Enter your name" />
+    <input autocomplete="off" type="text" name="player", placeholder="Enter your name" />
     <input type="submit" value="Join" />
   </form>
 <% end %>
 
 
-<%= if @room_name && @player_name do %>
-  the game starts here for <%= @player_name %> at <%= @room_name %>
+<%= if @room && @player do %>
+  the game starts here for <%= @player %> at <%= @room %>
 
   <div>
     <button phx-click="choose-weapon" phx-value-weapon="rock">Rock</button>
@@ -23,7 +23,7 @@
   </div>
 
   <%= for player <- @players do %>
-    <p><%= player.name %> - <%= player.weapon %></p>
+    <p><%= player.name %> - <%= player.weapon %> (score <%= player.score %>)</p>
   <% end %>
 
   <p>Result: <%= @result %></p>

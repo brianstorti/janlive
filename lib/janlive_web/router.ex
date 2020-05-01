@@ -18,7 +18,7 @@ defmodule JanliveWeb.Router do
     pipe_through :browser
 
     live "/", RoomLive
-    live "/rooms/:room_name", RoomLive
+    live "/rooms/:room", RoomLive
   end
 
   # Other scopes may use custom stacks.
