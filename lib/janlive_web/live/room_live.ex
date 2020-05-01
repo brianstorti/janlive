@@ -17,13 +17,24 @@ defmodule JanliveWeb.RoomLive do
 
   def handle_params(%{"room" => room}, _uri, socket) do
     GameServer.start_link(room)
+
+    PubSub.subscribe(Janlive.PubSub, topic(socket))
+    GameServer.add_player(room, "Brian")
+    GameServer.add_player(room, "Storti")
+    socket = assign(socket, player: "Brian")
+    PubSub.broadcast(Janlive.PubSub, topic(socket), "update-players")
+
     {:noreply, assign(socket, room: room)}
   end
 
   def handle_params(_params, _uri, socket), do: {:noreply, socket}
 
   def handle_event("submit-room", %{"room" => room}, socket) do
-    {:noreply, push_redirect(socket, to: Routes.live_path(socket, __MODULE__, room))}
+    if String.trim(room) == "" do
+      {:noreply, put_flash(socket, :error, "Please enter a room name")}
+    else
+      {:noreply, push_redirect(socket, to: Routes.live_path(socket, __MODULE__, room))}
+    end
   end
 
   def handle_event("submit-player-name", %{"player" => player}, socket) do
@@ -51,6 +62,13 @@ defmodule JanliveWeb.RoomLive do
     PubSub.broadcast(Janlive.PubSub, topic(socket), "update-players")
     PubSub.broadcast(Janlive.PubSub, topic(socket), %{"new-result" => result})
 
+    {:noreply, socket}
+  end
+
+  def handle_event("reset-game", _params, socket) do
+    GameServer.reset_game(socket.assigns.room)
+    PubSub.broadcast(Janlive.PubSub, topic(socket), "update-players")
+    PubSub.broadcast(Janlive.PubSub, topic(socket), %{"new-result" => nil})
     {:noreply, socket}
   end
 

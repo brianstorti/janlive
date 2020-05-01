@@ -17,14 +17,26 @@
   the game starts here for <%= @player %> at <%= @room %>
 
   <div>
-    <button phx-click="choose-weapon" phx-value-weapon="rock">Rock</button>
-    <button phx-click="choose-weapon" phx-value-weapon="paper">Paper</button>
-    <button phx-click="choose-weapon" phx-value-weapon="scissors">Scissors</button>
+    <%= for weapon <- ["rock", "paper", "scissors"] do %>
+      <button <%= if @result, do: "disabled" %>
+                           phx-click="choose-weapon"
+                           phx-value-weapon="<%= weapon %>"><%= weapon %></button>
+    <% end %>
   </div>
 
   <%= for player <- @players do %>
-    <p><%= player.name %> - <%= player.weapon %> (score <%= player.score %>)</p>
+    <div style="border: 1px solid">
+      <p>score <%= player.score %></p>
+      <p><%= player.name %></p>
+
+      <%= if player.name == @player || @result do %>
+        <p><%= player.weapon %></p>
+      <% end %>
+    </div>
   <% end %>
 
-  <p>Result: <%= @result %></p>
+  <%= if @result do %>
+    <p>Result: <%= @result %></p>
+    <button phx-click="reset-game">Reset Game</button>
+  <% end %>
 <% end %>
