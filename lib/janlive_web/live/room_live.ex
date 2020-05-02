@@ -3,6 +3,7 @@ defmodule JanliveWeb.RoomLive do
 
   alias Phoenix.PubSub
   alias Janlive.GameServer
+  alias Janlive.GameSupervisor
   alias JanliveWeb.RoomLiveMonitor
 
   def mount(_params, _session, socket) do
@@ -17,17 +18,8 @@ defmodule JanliveWeb.RoomLive do
   end
 
   def handle_params(%{"room" => room}, _uri, socket) do
-    pid = GameServer.start_link(room)
-
-    # PubSub.subscribe(Janlive.PubSub, topic(socket))
-    # GameServer.add_player(room, "Brian")
-    # GameServer.add_player(room, "Storti")
-    # GameServer.choose_weapon(room, "Storti", "scissors")
-    # GameServer.choose_weapon(room, "Brian", "scissors")
-    # socket = assign(socket, player: "Brian", result: "Brian won!")
-    # PubSub.broadcast(Janlive.PubSub, topic(socket), "update-players")
-
-    {:noreply, assign(socket, room: room, pid: pid)}
+    GameSupervisor.start_game(room)
+    {:noreply, assign(socket, room: room)}
   end
 
   def handle_params(_params, _uri, socket), do: {:noreply, socket}
@@ -65,15 +57,14 @@ defmodule JanliveWeb.RoomLive do
     end
 
     PubSub.broadcast(Janlive.PubSub, topic(socket), "update-players")
-    PubSub.broadcast(Janlive.PubSub, topic(socket), %{"new-result" => result})
+    if result, do: PubSub.broadcast(Janlive.PubSub, topic(socket), %{"new-result" => result})
 
     {:noreply, socket}
   end
 
   def handle_event("reset-game", _params, socket) do
     GameServer.reset_game(socket.assigns.room)
-    PubSub.broadcast(Janlive.PubSub, topic(socket), "update-players")
-    PubSub.broadcast(Janlive.PubSub, topic(socket), %{"new-result" => nil})
+    PubSub.broadcast(Janlive.PubSub, topic(socket), "reset-game")
     {:noreply, socket}
   end
 
@@ -83,6 +74,10 @@ defmodule JanliveWeb.RoomLive do
 
   def handle_info(%{"new-result" => result}, socket) do
     {:noreply, assign(socket, result: result)}
+  end
+
+  def handle_info("reset-game", socket) do
+    {:noreply, assign(socket, result: nil, players: GameServer.get_players_list(socket.assigns.room))}
   end
 
   defp topic(socket) do

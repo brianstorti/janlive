@@ -15,6 +15,7 @@ defmodule Janlive.Application do
       JanliveWeb.Endpoint,
       {Registry, keys: :unique, name: Janlive.GameRegistry},
       JanliveWeb.RoomLiveMonitor,
+      Janlive.GameSupervisor,
 
       # Start a worker by calling: Janlive.Worker.start_link(arg)
       # {Janlive.Worker, arg}
