@@ -3,6 +3,7 @@ defmodule JanliveWeb.RoomLive do
 
   alias Phoenix.PubSub
   alias Janlive.GameServer
+  alias JanliveWeb.RoomLiveMonitor
 
   def mount(_params, _session, socket) do
     state = %{
@@ -16,17 +17,17 @@ defmodule JanliveWeb.RoomLive do
   end
 
   def handle_params(%{"room" => room}, _uri, socket) do
-    GameServer.start_link(room)
+    pid = GameServer.start_link(room)
 
-    PubSub.subscribe(Janlive.PubSub, topic(socket))
-    GameServer.add_player(room, "Brian")
-    GameServer.add_player(room, "Storti")
-    GameServer.choose_weapon(room, "Storti", "scissors")
-    GameServer.choose_weapon(room, "Brian", "scissors")
-    socket = assign(socket, player: "Brian", result: "Brian won!")
-    PubSub.broadcast(Janlive.PubSub, topic(socket), "update-players")
+    # PubSub.subscribe(Janlive.PubSub, topic(socket))
+    # GameServer.add_player(room, "Brian")
+    # GameServer.add_player(room, "Storti")
+    # GameServer.choose_weapon(room, "Storti", "scissors")
+    # GameServer.choose_weapon(room, "Brian", "scissors")
+    # socket = assign(socket, player: "Brian", result: "Brian won!")
+    # PubSub.broadcast(Janlive.PubSub, topic(socket), "update-players")
 
-    {:noreply, assign(socket, room: room)}
+    {:noreply, assign(socket, room: room, pid: pid)}
   end
 
   def handle_params(_params, _uri, socket), do: {:noreply, socket}
@@ -40,8 +41,10 @@ defmodule JanliveWeb.RoomLive do
   end
 
   def handle_event("submit-player-name", %{"player" => player}, socket) do
-    case GameServer.add_player(socket.assigns.room, player) do
+    room = socket.assigns.room
+    case GameServer.add_player(room, player) do
       :ok ->
+        RoomLiveMonitor.monitor(self(), room, player)
         PubSub.subscribe(Janlive.PubSub, topic(socket))
         PubSub.broadcast(Janlive.PubSub, topic(socket), "update-players")
         {:noreply, assign(socket, player: player)}
@@ -82,7 +85,7 @@ defmodule JanliveWeb.RoomLive do
     {:noreply, assign(socket, result: result)}
   end
 
-  def topic(socket) do
+  defp topic(socket) do
     "room:#{socket.assigns.room}"
   end
 end

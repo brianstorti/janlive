@@ -14,6 +14,7 @@ defmodule Janlive.Application do
       # Start the Endpoint (http/https)
       JanliveWeb.Endpoint,
       {Registry, keys: :unique, name: Janlive.GameRegistry},
+      JanliveWeb.RoomLiveMonitor,
 
       # Start a worker by calling: Janlive.Worker.start_link(arg)
       # {Janlive.Worker, arg}
