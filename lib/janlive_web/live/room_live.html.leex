@@ -12,31 +12,46 @@
   </form>
 <% end %>
 
-
 <%= if @room && @player do %>
-  the game starts here for <%= @player %> at <%= @room %>
+  <div class="invite"><img src="/images/arrow.png"></div>
+  <div class="github"><a href="https://github.com/brianstorti/janlive" target="blank"><i class="fa fa-3x fa-github"></i></a></div>
 
-  <div>
-    <%= for weapon <- ["rock", "paper", "scissors"] do %>
-      <button <%= if @result, do: "disabled" %>
-                           phx-click="choose-weapon"
-                           phx-value-weapon="<%= weapon %>"><%= weapon %></button>
-    <% end %>
-  </div>
+  <div class="game-container">
+    <div>
+      <h1>Choose your weapon</h1>
 
-  <%= for player <- @players do %>
-    <div style="border: 1px solid">
-      <p>score <%= player.score %></p>
-      <p><%= player.name %></p>
+      <div class="weapon-container">
+        <%= for weapon <- ["rock", "paper", "scissors"] do %>
+          <div class="weapon-wrapper">
+            <a phx-click="choose-weapon" phx-value-weapon="<%= weapon %>">
+              <i class="weapon fa fa-5x fa-hand-<%= weapon %>-o"></i>
+              <p class="weapon-label"><%= weapon %></p>
+            </a>
+          </div>
+        <% end %>
+      </div>
 
-      <%= if player.name == @player || @result do %>
-        <p><%= player.weapon %></p>
-      <% end %>
+      <div class="weapon-container">
+        <%= for player <- @players do %>
+          <div class="weapon-wrapper disabled">
+            <span class="label">Score: <%= player.score %></span>
+            <%= if (player.name == @player && player.weapon != "") || @result do %>
+              <p class="weapon-label"><%= player.name %></p><i class="weapon fa fa-5x fa-hand-<%= player.weapon %>-o"></i>
+              <p class="weapon-label"><%= player.weapon %></p>
+            <% else %>
+              <p class="weapon-label"><%= player.name %></p><i class="weapon fa fa-5x fa-question"></i>
+              <p class="weapon-label">...</p>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <div>
+        <%= if @result do %>
+          <h1><%= @result %></h1>
+          <button phx-click="reset-game">Start new game</button>
+        <% end %>
+      </div>
     </div>
-  <% end %>
-
-  <%= if @result do %>
-    <p>Result: <%= @result %></p>
-    <button phx-click="reset-game">Reset Game</button>
-  <% end %>
+  </div>
 <% end %>

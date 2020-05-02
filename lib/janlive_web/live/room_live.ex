@@ -21,7 +21,9 @@ defmodule JanliveWeb.RoomLive do
     PubSub.subscribe(Janlive.PubSub, topic(socket))
     GameServer.add_player(room, "Brian")
     GameServer.add_player(room, "Storti")
-    socket = assign(socket, player: "Brian")
+    GameServer.choose_weapon(room, "Storti", "scissors")
+    GameServer.choose_weapon(room, "Brian", "scissors")
+    socket = assign(socket, player: "Brian", result: "Brian won!")
     PubSub.broadcast(Janlive.PubSub, topic(socket), "update-players")
 
     {:noreply, assign(socket, room: room)}
