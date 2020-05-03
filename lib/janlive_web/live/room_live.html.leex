@@ -7,7 +7,7 @@
   </div>
 <% end %>
 
-<%= if @room && @player == nil do %>
+<%= if @room != nil && @player == nil do %>
   <div class="name">
     <form phx-submit="submit-player-name">
       <input class="player-name" autocomplete="off" type="text" name="player", placeholder="Enter your name" />

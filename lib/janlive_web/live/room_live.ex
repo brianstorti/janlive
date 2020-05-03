@@ -80,7 +80,5 @@ defmodule JanliveWeb.RoomLive do
     {:noreply, assign(socket, result: nil, players: GameServer.get_players_list(socket.assigns.room))}
   end
 
-  defp topic(socket) do
-    "room:#{socket.assigns.room}"
-  end
+  defp topic(socket), do: "room:#{socket.assigns.room}"
 end
