@@ -22,7 +22,7 @@
 
       <div class="weapon-container">
         <%= for weapon <- ["rock", "paper", "scissors"] do %>
-          <div class="weapon-wrapper <%= if length(@players) < 2, do: 'disabled' %>">
+          <div class="weapon-wrapper <%= if @result || length(@players) < 2, do: 'disabled' %>">
             <a phx-click="choose-weapon" phx-value-weapon="<%= weapon %>">
               <i class="weapon fa fa-5x fa-hand-<%= weapon %>-o"></i>
               <p class="weapon-label"><%= String.capitalize(weapon) %></p>
