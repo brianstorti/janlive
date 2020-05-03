@@ -1,18 +1,9 @@
 # Janlive
 
-To start your Phoenix server:
+A [rock paper scissors](https://en.wikipedia.org/wiki/Rock-paper-scissors) game built with [`Phoenix Liveview`](https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.html).
 
-  * Setup the project with `mix setup`
-  * Start Phoenix endpoint with `mix phx.server`
+![demo](/docs/demo.gif)
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+### License
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
-
-## Learn more
-
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+Use the code as you want. If you do use it, a reference would be appreciated, but not required.
